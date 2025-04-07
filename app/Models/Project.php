@@ -14,22 +14,25 @@ class Project extends Model
         'name',
         'description',
         'status',
-        'created_by',
+        'create_by',
     ];
 
-    public function casts(): array
-    {
-        return [
-            'name' => 'string',
-            'description' => 'string',
-            'status' => 'string',
-            'created_by' => 'integer',
-        ];
-    }
+    protected $casts = [
+        'name' => 'string',
+        'description' => 'string',
+        'status' => 'string',
+        'create_by' => 'integer',
+    ];
+
 
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'project_user', 'project_id', 'user_id');
+    }
+
+    public function create_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'create_by');
     }
 
     public function sprints(): BelongsTo
