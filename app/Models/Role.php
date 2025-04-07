@@ -14,13 +14,11 @@ class Role extends Model
         'value',
     ];
 
-    public function casts(): array
-    {
-        return [
-            'name' => 'string',
-            'value' => 'string',
-        ];
-    }
+    protected $casts = [
+        'name' => 'string',
+        'value' => 'string',
+    ];
+
 
     public function users(): BelongsToMany
     {
