@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Sprint;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,37 +17,47 @@ class ProjectController extends Controller
     public function index(): Response
     {
         $authUser = User::find(Auth::id());
-        $role = $authUser?->roles()?->get();
-        $roleName = $role[0]->name;
+        $role = $authUser->roles;
 
-        $projects = Project::with('create_by')->get();
+        $developers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'developer');
+        })->get();
 
+        $projects = [];
+        if ($role[0]->name === 'admin'){
+            $projects = Project::all();
+        } elseif ($role[0]->name === 'developer'){
+            $projects = $authUser->projects;
+        }
+
+        foreach ($projects as $project) {
+            $project['create_by'] = $project->creator->name;
+        }
 
         return Inertia::render('Project/Index', [
-            'projects' => $projects->map(function ($project) {
-                return [
-                    'id' => $project->id,
-                    'name' => $project->name,
-                    'description' => $project->description,
-                    'status' => $project->status,
-                    'create_by' => $project->creator?->name ?? 'Desconocido',
-                ];
-            }),
-
-            'userRole' => $roleName,
+            'projects' => $projects,
+            'permissions' => $role[0]->name,
+            'developers' => $developers,
         ]);
+
     }
 
     public function show($id): Response
     {
+        $authUser = User::find(Auth::id());
+        $role = $authUser->roles;
+        $permissions = $role[0]->name;
+
         $project = Project::with('sprints')->findOrFail($id);
+        $developers = $project->users;
+
 
         return Inertia::render('Project/Show', [
             'project' => $project,
+            'developers' => $developers,
+            'permissions' => $permissions,
         ]);
     }
-
-    public function create(){}
 
     public function store(Request $request): RedirectResponse
     {
@@ -68,18 +79,41 @@ class ProjectController extends Controller
             $project->users()->attach($validatedData['developers_ids']);
         }
 
-        return redirect()->route('projects.index')
+        return redirect()->route('projects.show', $project->id)
             ->with('success', 'Project created successfully');
     }
-    public function edit(){}
-    public function update(){}
-    public function destroy($id)
+
+    public function update(Request $request, $id): RedirectResponse
     {
-        dd("aca entra");
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'developer_ids' => 'nullable|array',
+            'developer_ids.*' => 'exists:users,id',
+            'status' => 'required|string|max:255',
+        ]);
+
+        $project = Project::findOrFail($id);
+
+        $project->update([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'],
+            'status' => $validatedData['status'],
+        ]);
+
+        if (!empty($validatedData['developer_ids'])) {
+            $project->users()->sync($validatedData['developer_ids']);
+        }
+
+        return redirect()->route('projects.show', $project->id);
+    }
+
+    public function destroy($id): JsonResponse
+    {
         $project = Project::where('id', $id)->firstOrFail();
         $project->delete();
 
-        return  redirect()->route('projects.index');
+        return response()->json(['message' => 'Project deleted'], 200);
     }
 
 }

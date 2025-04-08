@@ -14,8 +14,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ]
 
 const props = defineProps<{
-  projects: Project[]
+  projects: Project[],
+  permissions: string,
+  developers: any[]
 }>()
+
 </script>
 
 <template>
@@ -30,22 +33,23 @@ const props = defineProps<{
         </div>
 
         <!-- Create button -->
-        <div class="w-full px-2 py-1 flex justify-end">
-          <ProjectCreateModal />
+        <div class="w-full px-2 py-1 flex justify-end" v-if="props.permissions === 'admin'">
+          <ProjectCreateModal :developers="props.developers" />
         </div>
       </div>
       <div class="w-full px-3 py-4">
-        <div class="flex flex-wrap gap-4 justify-center sm:justify-start">
+        <div class="flex flex-wrap gap-4 justify-start">
           <template v-if="props.projects.length">
             <CardProject
               v-for="project in props.projects"
               :key="project.id"
               :project="project"
+              :permissions="props.permissions"
               class="w-full sm:w-[48%] lg:w-[31%]" 
-            />
+              />
           </template>
           <template v-else>
-            <h1 class="text-center text-gray-500 w-full">Project not found</h1>
+            <h1 class="text-center text-gray-500 w-full">Projects not found</h1>
           </template>
         </div>
       </div>

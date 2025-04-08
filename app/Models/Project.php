@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
@@ -21,8 +22,10 @@ class Project extends Model
         'name' => 'string',
         'description' => 'string',
         'status' => 'string',
-        'create_by' => 'integer',
+        'create_by' => 'string',
     ];
+
+    use SoftDeletes;
 
 
     public function users(): BelongsToMany
@@ -30,7 +33,7 @@ class Project extends Model
         return $this->belongsToMany(User::class, 'project_user', 'project_id', 'user_id');
     }
 
-    public function create_by(): BelongsTo
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'create_by');
     }
