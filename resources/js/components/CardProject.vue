@@ -21,7 +21,7 @@ const props = defineProps<{
 
 const formatDate = (dateStr: string): string => {
   const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' }
-  return new Date(dateStr).toLocaleDateString('es-ES', options)
+  return new Date(dateStr).toLocaleDateString('en-US', options)
 }
 
 function getStatusClass(status: ProjectStatus): string {
@@ -52,7 +52,11 @@ const showProject = () => {
   <div class="max-w-xs mx-auto mt-6">
     <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-200">
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-xl font-bold text-gray-800">{{ props.project.name }}</h2>
+        <h2 class="text-xl font-bold text-gray-800">
+          {{ props.project.name.length > 12
+          ? props.project.name.slice(0, 12) + '...'
+          : props.project.name }}
+        </h2>
         <span
           class="px-3 py-1 text-sm rounded-full capitalize"
           :class="getStatusClass(props.project.status)"
@@ -60,7 +64,7 @@ const showProject = () => {
           {{ props.project.status }}
         </span>
       </div>
-      <p class="text-gray-600 mb-4">
+      <p class="text-gray-600 mb-2">
         {{ props.project.description.length > 30
           ? props.project.description.slice(0, 30) + '...'
           : props.project.description }}
@@ -68,7 +72,7 @@ const showProject = () => {
 
       <div class="text-sm text-gray-500">
         <p><span class="font-medium">ID:</span> {{ props.project.id }}</p>
-        <p><span class="font-medium">Created by:</span> {{ props.project.create_by ?? 'N/A' }}</p>
+        <p><span class="font-medium">Created by:</span> {{ props.project.create_by }}</p>
         <p><span class="font-medium">Created:</span> {{ formatDate(props.project.created_at) }}</p>
       </div>
       <div class="w-full flex justify-end mt-2">

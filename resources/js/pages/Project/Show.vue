@@ -3,8 +3,8 @@ import { Project } from '@/types'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { type BreadcrumbItem } from '@/types'
 import { Head } from '@inertiajs/vue3'
-
 import Swal from 'sweetalert2';
+import UpdateProjectModal from '@/components/UpdateProjectModal.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -14,7 +14,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 ]
 
 const props = defineProps<{
-  project: Project
+  project: Project,
+  developers: any[],
+  permissions: string
 }>()
 
 const back = () => {
@@ -46,6 +48,7 @@ const deleteProject = async () => {
         })
 
         if (!response.ok) {
+            const data = await response.json()
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -59,7 +62,7 @@ const deleteProject = async () => {
             });
             Toast.fire({
                 icon: "success",
-                title: "Project eliminated"
+                title: data.message
             });
             return
         }
@@ -67,7 +70,12 @@ const deleteProject = async () => {
             title: "Deleted",
             text: "Your project has been deleted",
             icon: "success"
-        })
+            
+        }).then(() => {
+            window.location.href = '/projects';
+        });
+        
+
         } catch (error){
             const Toast = Swal.mixin({
                 toast: true,
@@ -91,27 +99,69 @@ const deleteProject = async () => {
 </script>
 
 <template>
-  <Head title="Projects" />
+    <Head title="Projects" />
   
-  <AppLayout :breadcrumbs="breadcrumbs">
-    <div class=" w-full flex justify-start m-2">
-        <button @click="back" class=""> <- Back</button>
-    </div>
-    <div class="m-2 ">
-        <div class="w-full flex justify-center">
-            <h1>{{ props.project.name }}</h1>
+    <AppLayout :breadcrumbs="breadcrumbs">
+      <!-- Project title -->
+      <div class="w-full flex justify-center pt-6">
+        <h1 class="text-3xl font-bold text-gray-500">{{ props.project.name }}</h1>
+      </div>
+  
+      <!-- Top bar: back and update buttons -->
+      <div class="w-full flex justify-between items-center mt-4 px-5">
+        <button
+          @click="back"
+          class="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium"
+        >
+          <span class="text-lg">&#8592;</span> Back
+        </button>
+        <UpdateProjectModal
+          v-if="props.permissions === 'admin'"
+          :project="props.project"
+          :developers="props.developers"
+        />
+      </div>
+  
+      <!-- Project content -->
+      <div class="m-4 space-y-6">
+        <!-- Description -->
+        <div class="bg-gray-100 p-4 rounded shadow-sm">
+          <h2 class="text-lg font-semibold text-gray-700 mb-2">Description</h2>
+          <p class="text-gray-600">{{ props.project.description }}</p>
         </div>
-        <div class="w- full m-2">
-            <span>{{ props.project.description }}</span>
+  
+        <!-- Developer list -->
+        <div class="bg-white p-4 rounded shadow-sm border">
+          <h2 class="text-lg font-semibold text-gray-700 mb-2">Developers in the project</h2>
+          <ul class="list-disc list-inside text-gray-700 space-y-1">
+            <template v-if="props.developers.length">
+                <li v-for="developer in props.developers" :key="developer.id">
+                {{ developer.name }} — <span class="text-sm text-gray-500">{{ developer.email }}</span>
+                </li>
+            </template>
+            <li v-else class="text-sm text-gray-500 list-none">
+                No developer partners associated with this project
+            </li>
+          </ul>
         </div>
-        <div class="bg-red-500 w-full flex justify-center">
-            Sprint
+  
+        <!-- Sprint placeholder -->
+        <div class="bg-red-100 p-4 text-center text-red-600 font-medium rounded shadow-sm">
+          Sprint
         </div>
-        
-    </div>
-    <div class="w-full flex justify-end p-5">
-        <button class="bg-red-100 text-red-600 px-2 py-1 rounded hover:bg-red-200 mr-1" :value="props.project.id" @click="deleteProject">Delete</button>
-    </div>
-      
-  </AppLayout>
-</template>
+      </div>
+  
+      <!-- Delete button -->
+      <div class="w-full flex justify-end pb-6 px-5">
+        <button
+          class="bg-red-100 text-red-600 px-4 py-2 rounded hover:bg-red-200 font-semibold"
+          :value="props.project.id"
+          @click="deleteProject"
+          v-if="props.permissions === 'admin'"
+        >
+          Delete
+        </button>
+      </div>
+    </AppLayout>
+  </template>
+  
