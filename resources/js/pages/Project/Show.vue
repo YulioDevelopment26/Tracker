@@ -5,6 +5,8 @@ import { type BreadcrumbItem } from '@/types'
 import { Head } from '@inertiajs/vue3'
 import Swal from 'sweetalert2';
 import UpdateProjectModal from '@/components/UpdateProjectModal.vue';
+import CreateSprintModal from '@/components/CreateSprintModal.vue';
+import CardSprint from '@/components/CardSprint.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -16,11 +18,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 const props = defineProps<{
   project: Project,
   developers: any[],
-  permissions: string
+  permissions: string,
+  sprints: any[]
 }>()
 
 const back = () => {
-    window.history.back()
+    window.location.href = `/projects`
 }
 
 const deleteProject = async () => {
@@ -38,63 +41,60 @@ const deleteProject = async () => {
     if (!result.isConfirmed) return  
 
     try{
-        const response = await fetch(`/projects/${props.project.id}`, {
-            method: 'DELETE',
-            headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || ''
+      const response = await fetch(`/projects/${props.project.id}`, {
+          method: 'DELETE',
+          headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-TOKEN': (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement)?.content || ''
+          }
+      })
+
+      if (!response.ok) {
+          const data = await response.json()
+          const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                  toast.onmouseenter = Swal.stopTimer;
+                  toast.onmouseleave = Swal.resumeTimer;
+              }
+          });
+          Toast.fire({
+              icon: "success",
+              title: data.message
+          });
+          return
+      }
+      Swal.fire({
+          title: "Deleted",
+          text: "Your project has been deleted",
+          icon: "success"
+          
+      }).then(() => {
+          window.location.href = '/projects';
+      });
+    } catch (error){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer
+                toast.onmouseleave = Swal.resumeTimer
             }
         })
 
-        if (!response.ok) {
-            const data = await response.json()
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                }
-            });
-            Toast.fire({
-                icon: "success",
-                title: data.message
-            });
-            return
-        }
-        Swal.fire({
-            title: "Deleted",
-            text: "Your project has been deleted",
-            icon: "success"
-            
-        }).then(() => {
-            window.location.href = '/projects';
-        });
-        
-
-        } catch (error){
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer
-                    toast.onmouseleave = Swal.resumeTimer
-                }
-            })
-
-            Toast.fire({
-                icon: 'error',
-                title: 'Error while trying to delete'
-            })        
-                    
-        }
+        Toast.fire({
+            icon: 'error',
+            title: 'Error while trying to delete'
+        })            
+    }
 }
 </script>
 
@@ -146,13 +146,31 @@ const deleteProject = async () => {
         </div>
   
         <!-- Sprint placeholder -->
-        <div class="bg-red-100 p-4 text-center text-red-600 font-medium rounded shadow-sm">
-          Sprint
+        <h1 class="text-center text-gray-400 w-full font-medium text-2xl">Sprints</h1>
+        <template v-if="props.sprints.length">
+          <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <CardSprint
+              v-for="sprint in props.sprints"
+              :key="sprint.id"
+              :sprint="sprint"
+              :permissions="props.permissions"
+              :project_id="props.project.id"
+            />
+          </div>
+        </template>
+        <template v-else >
+          <div class="bg-red-50 p-4 rounded shadow-sm border border-red-200 flex items-center justify-between">
+            <span class="text-sm text-red-500">No sprints have been created yet</span>
+          </div>
+        </template>
+        <div class="w-full flex justify-end" v-if="props.permissions === 'admin'">
+            <CreateSprintModal :project="props.project" />
         </div>
       </div>
   
       <!-- Delete button -->
-      <div class="w-full flex justify-end pb-6 px-5">
+      <hr>
+      <div class="w-full flex justify-start pb-6 px-5 pt-4">
         <button
           class="bg-red-100 text-red-600 px-4 py-2 rounded hover:bg-red-200 font-semibold"
           :value="props.project.id"

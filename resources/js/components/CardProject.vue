@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmits, defineProps } from 'vue'
+import { defineProps } from 'vue'
 
 type ProjectStatus = 'active' | 'inactive' | 'completed' | 'cancelled' | 'paused'
 
@@ -41,7 +41,6 @@ function getStatusClass(status: ProjectStatus): string {
   }
 }
 
-// TO DO Show project
 const showProject = () => {
   window.location.href = `/projects/${props.project.id}`
 }

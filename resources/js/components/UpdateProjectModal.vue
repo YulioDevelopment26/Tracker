@@ -17,11 +17,6 @@ const props = defineProps<{
   project: Project;
   developers: Developer[];
 }>();
-
-console.log(props.developers)
-
-const developers = props.developers ?? []
-
 const open = ref(false);
 
 const form = useForm({
@@ -39,7 +34,6 @@ watch (open, (isOpen) => {
         form.status = props.project.status;
         form.developers_id = props.developers.map((dev) => dev.id);
     }
-
 })
 
 const submit = () => {
@@ -60,7 +54,7 @@ const submit = () => {
 
     <Dialog :open="open" @update:open="open = $event">
       <DialogContent class="max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <DialogTitle class="text-lg font-bold mb-4 text-gray-800">New Project</DialogTitle>
+        <DialogTitle class="text-lg font-bold mb-4 text-gray-800">Update Project</DialogTitle>
 
         <form @submit.prevent="submit" class="space-y-4">
           <!-- Name -->
@@ -93,7 +87,7 @@ const submit = () => {
             </div>
 
 
-          <!-- Seleccionar desarrolladores -->
+          <!-- Select developers -->
           <div>
             <label class="block text-sm font-medium text-gray-700">Developers</label>
             <select

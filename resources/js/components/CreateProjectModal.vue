@@ -16,8 +16,6 @@ const props = defineProps<{
     developers?: Developer[];
 }>();
 
-const developers = props.developers ?? []
-
 const open = ref(false);
 
 const form = useForm({
@@ -27,7 +25,6 @@ const form = useForm({
 });
 
 const submit = () => {
-  console.log(form)
   form.post('/projects', {
     onSuccess: () => {
       form.reset();
@@ -47,10 +44,11 @@ const submit = () => {
 
     <Dialog :open="open" @update:open="open = $event">
       <DialogContent class="max-w-md p-6 bg-white rounded-lg shadow-lg">
+        <!-- Title -->
         <DialogTitle class="text-lg font-bold mb-4 text-gray-800">New Project</DialogTitle>
 
         <form @submit.prevent="submit" class="space-y-4">
-          <!-- Nombre -->
+          <!-- Name -->
           <div>
             <label class="block text-sm font-medium text-gray-700">Name</label>
             <Input v-model="form.name" class="w-full border-gray-300 text-black bg-white" />
