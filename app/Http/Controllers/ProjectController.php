@@ -51,11 +51,11 @@ class ProjectController extends Controller
         $project = Project::with('sprints')->findOrFail($id);
         $developers = $project->users;
 
-
         return Inertia::render('Project/Show', [
             'project' => $project,
             'developers' => $developers,
             'permissions' => $permissions,
+            'sprints' => $project->sprints,
         ]);
     }
 
@@ -75,8 +75,8 @@ class ProjectController extends Controller
             'create_by' => auth()->id(),
         ]);
 
-        if (!empty($validatedData['developers_ids'])) {
-            $project->users()->attach($validatedData['developers_ids']);
+        if (isset($validatedData['developer_ids'])) {
+            $project->users()->attch($validatedData['developer_ids']);
         }
 
         return redirect()->route('projects.show', $project->id)
@@ -101,7 +101,7 @@ class ProjectController extends Controller
             'status' => $validatedData['status'],
         ]);
 
-        if (!empty($validatedData['developer_ids'])) {
+        if (isset($validatedData['developer_ids'])) {
             $project->users()->sync($validatedData['developer_ids']);
         }
 

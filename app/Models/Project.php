@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
     protected $table = 'projects';
+    use SoftDeletes;
+
 
     protected $fillable = [
         'name',
@@ -25,7 +28,6 @@ class Project extends Model
         'create_by' => 'string',
     ];
 
-    use SoftDeletes;
 
 
     public function users(): BelongsToMany
@@ -38,8 +40,8 @@ class Project extends Model
         return $this->belongsTo(User::class, 'create_by');
     }
 
-    public function sprints(): BelongsTo
+    public function sprints(): HasMany
     {
-        return $this->belongsTo(Sprint::class, 'sprint_id');
+        return $this->hasMany(Sprint::class, 'project_id');
     }
 }
