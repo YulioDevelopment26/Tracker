@@ -20,24 +20,21 @@ class Sprint extends Model
       'project_id',
     ];
 
-    public function casts(): array
-    {
-        return [
+    protected $casts = [
           'name' => 'string',
           'goal' => 'string',
           'start_date' => 'date',
           'end_date' => 'date',
           'project_id' => 'integer',
-        ];
-    }
+    ];
 
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
 
-    public function tasks(): BelongsTo
+    public function tasks(): HasMany
     {
-        return $this->BelongsTo(Task::class);
+        return $this->hasMany(Task::class);
     }
 }

@@ -4,6 +4,8 @@ import AppLayout from '@/layouts/AppLayout.vue'
 import { type BreadcrumbItem } from '@/types'
 import Swal from 'sweetalert2'
 import UpdateSprintModal from '@/components/UpdateSprintModal.vue'
+import CreateTaskModal from '@/components/CreateTaskModal.vue'
+import CardTask from '@/components/CardTask.vue'
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -146,18 +148,31 @@ console.log(props)
           </div>
 
           <!-- Tasks Placeholder -->
-           <h1 class="text-center text-gray-400 w-full font-medium text-2xl">Tasks</h1>
+           <h1 class="text-center text-gray-400 w-full font-medium text-2xl mb-4">Tasks</h1>
            <template v-if="props.tasks">
-
+                <div class="mx-2 grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    <CardTask
+                      v-for="task in props.tasks"
+                        :key="task.id"
+                        :task="task"
+                        :permissions="props.permissions"
+                        :project_id="props.project_id"
+                        :sprint="props.sprint"
+                    />
+                </div>
            </template>
            <template v-else>
             <div class="bg-red-50 p-4 rounded shadow-sm border border-red-200 flex items-center justify-between m-4">
                 <span class="text-sm text-red-500">No tasks have been created yet</span>
             </div>
            </template>
+           <div class="w-full flex justify-end mt-4" v-if="props.permissions === 'admin'">
+            <CreateTaskModal
+                :sprint="props.sprint"
+                :project_id="props.project_id" />
+           </div>
 
           <!-- Delete button -->
-           <hr>
            <div class="w-full flex justify-start pb-6 px-5 pt-4">
             <button
                 class="bg-red-100 text-red-600 px-4 py-2 rounded hover:bg-red-200 font-semibold"

@@ -20,7 +20,7 @@ const mainNavItems: NavItem[] = [
         icon: Folder,
     },
     {
-        title: 'Users',
+        title: 'User',
         href: '/users',
         icon: Users,
     },
@@ -59,7 +59,7 @@ const footerNavItems: NavItem[] = [
         </SidebarContent>
 
         <SidebarFooter>
-            <NavFooter :items="footerNavItems" />
+            <!-- <NavFooter :items="footerNavItems" /> -->
             <NavUser />
         </SidebarFooter>
     </Sidebar>
