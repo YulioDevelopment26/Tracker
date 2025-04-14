@@ -20,7 +20,7 @@ const formatToISO = (date: Date) => {
   return date.toISOString().split('T')[0];
 }
 
-// 🗓️ Fechas actuales
+
 const today = new Date();
 const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
@@ -28,7 +28,6 @@ tomorrow.setDate(today.getDate() + 1);
 const todayFormatted = formatToISO(today);
 const tomorrowFormatted = formatToISO(tomorrow);
 
-// 🚀 Formulario
 const form = useForm({
   name: '',
   goal: '',
@@ -60,7 +59,7 @@ const submit = () => {
 
 <template>
   <div>
-    <!-- Botón -->
+    <!-- button -->
     <Button @click="open = true" class="border-blue-500 text-white bg-blue-500 hover:bg-blue-600">
       Create Sprint
     </Button>
@@ -68,10 +67,10 @@ const submit = () => {
     <!-- Modal -->
     <Dialog :open="open" @update:open="open = $event">
       <DialogContent class="max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <!-- Título -->
+        <!-- title -->
         <DialogTitle class="text-lg font-bold mb-4 text-gray-800">New Sprint</DialogTitle>
 
-        <!-- Formulario -->
+        <!-- form -->
         <form @submit.prevent="submit" class="space-y-4">
           <!-- Name -->
           <div>

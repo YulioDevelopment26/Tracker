@@ -7,6 +7,7 @@ use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -16,6 +17,7 @@ class User extends Authenticatable
      * @var string
      */
     protected $table = 'users';
+    use softdeletes;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -50,17 +52,14 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'nickname' => 'string',
-            'hour_value' => 'integer',
-            'work_time' => 'string',
-            'status' => 'string',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'nickname' => 'string',
+        'hour_value' => 'integer',
+        'work_time' => 'string',
+        'status' => 'string',
+    ];
 
     public function roles(): BelongsToMany
     {

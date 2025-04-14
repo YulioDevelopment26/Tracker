@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SprintController;
-
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -23,8 +24,16 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('projects/{project}/sprints/{sprint}', [SprintController::class, 'show'])->name('sprints.show');
     Route::post('sprints', [SprintController::class , 'store'])->name('sprints.store');
-    Route::put('/projects/{project}/sprints/{sprint}', [SprintController::class, 'update'])->name('sprints.update');
+    Route::put('projects/{project}/sprints/{sprint}', [SprintController::class, 'update'])->name('sprints.update');
     Route::delete('projects/{project}/sprints/{sprint}', [SprintController::class, 'destroy'])->name('sprints.destroy');
+
+    Route::get('tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
+    Route::post('tasks', [TaskController::class , 'store'])->name('tasks.store');
+    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
+
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
 });
 
 require __DIR__.'/settings.php';

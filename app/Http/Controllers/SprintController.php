@@ -13,7 +13,6 @@ use Inertia\Response;
 
 class SprintController extends Controller
 {
-
     public function show($project_id, $sprint_id): Response
     {
         $authUser = User::find(Auth::id());
@@ -28,8 +27,6 @@ class SprintController extends Controller
             'project_id' => $project_id,
         ]);
     }
-
-    public function create(){}
 
     public function store(Request $request): RedirectResponse
     {
@@ -52,8 +49,6 @@ class SprintController extends Controller
         return redirect()->route('projects.show', $validatedData['project_id'])
             ->with('success', 'Project created successfully');
     }
-
-    public function edit(){}
 
     public function update(Request $request, $project_id, $sprint_id): RedirectResponse
     {

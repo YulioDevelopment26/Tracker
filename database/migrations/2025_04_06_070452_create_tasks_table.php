@@ -24,15 +24,15 @@ return new class extends Migration
             $table->unsignedBigInteger('sprint_id');
             $table->foreign('sprint_id')->references('id')->on('sprints')->onDelete('cascade');
 
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable(true);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
-            $table->date('estimated_start');
-            $table->date('estimated_finish');
-            $table->integer('estimated_hours');
-            $table->date('actual_start');
-            $table->date('actual_finish');
-            $table->integer('actual_hours');
+            $table->date('estimated_start')->nullable(true);
+            $table->date('estimated_finish')->nullable(true);
+            $table->integer('estimated_hours')->nullable(true);
+            $table->date('actual_start')->nullable(true);
+            $table->date('actual_finish')->nullable(true);
+            $table->integer('actual_hours')->nullable(true);
             $table->timestamps();
             $table->softDeletes();
         });

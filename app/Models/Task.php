@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Task extends Model
 {
     protected $table = 'tasks';
+
+    use softDeletes;
 
     protected $fillable = [
         'name',
@@ -26,25 +29,23 @@ class Task extends Model
         'actual_hours',
     ];
 
-    public function casts(): array
-    {
-        return [
-            'name' => 'string',
-            'description' => 'string',
-            'status' => 'string',
-            'priority' => 'string',
-            'category' => 'string',
-            'story_points' => 'integer',
-            'sprint_id' => 'integer',
-            'user_id' => 'integer',
-            'estimated_start' => 'date',
-            'estimated_finish' => 'date',
-            'estimated_hours' => 'integer',
-            'actual_start' => 'date',
-            'actual_finish' => 'date',
-            'actual_hours' => 'integer',
-        ];
-    }
+    protected $casts = [
+        'name' => 'string',
+        'description' => 'string',
+        'status' => 'string',
+        'priority' => 'string',
+        'category' => 'string',
+        'story_points' => 'integer',
+        'sprint_id' => 'integer',
+        'user_id' => 'integer',
+        'estimated_start' => 'date',
+        'estimated_finish' => 'date',
+        'estimated_hours' => 'integer',
+        'actual_start' => 'date',
+        'actual_finish' => 'date',
+        'actual_hours' => 'integer',
+    ];
+
 
     public function user(): BelongsTo
     {
