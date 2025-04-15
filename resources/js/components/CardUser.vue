@@ -29,7 +29,6 @@ function getStatusClass(status: UserStatus): string {
             return  'bg-gray-100 text-gray-600'
     }
 }
-console.log(props.user)
 </script>
 <template>
     <div class="maxx-w-xs mx-auto mt-6">

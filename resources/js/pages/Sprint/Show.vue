@@ -25,9 +25,9 @@ interface Sprint {
 
 const props = defineProps<{
     sprint: Sprint,
-    tasks: any[]
-    permissions: string
-    project_id: number
+    tasks: any[],
+    permissions: string,
+    project_id: number,
 }>()
 
 
@@ -109,8 +109,6 @@ const deleteSprint = async () => {
     }
 
 }
-console.log(props)
-
 </script>
 
 <template>

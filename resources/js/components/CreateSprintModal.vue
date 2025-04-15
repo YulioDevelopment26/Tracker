@@ -8,8 +8,6 @@ import { Input } from '@/components/ui/input';
 import { useForm, router } from '@inertiajs/vue3';
 import { Project } from '@/types'
 
-
-
 const props = defineProps<{
     project: Project,
 }>()

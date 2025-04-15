@@ -19,7 +19,8 @@ const props = defineProps<{
   project: Project,
   developers: any[],
   permissions: string,
-  sprints: any[]
+  sprints: any[],
+  associatedDevelopers: any[]
 }>()
 
 const back = () => {
@@ -97,7 +98,6 @@ const deleteProject = async () => {
     }
 }
 </script>
-
 <template>
     <Head title="Projects" />
   
@@ -135,7 +135,7 @@ const deleteProject = async () => {
           <h2 class="text-lg font-semibold text-gray-700 mb-2">Developers in the project</h2>
           <ul class="list-disc list-inside text-gray-700 space-y-1">
             <template v-if="props.developers.length">
-                <li v-for="developer in props.developers" :key="developer.id">
+                <li v-for="developer in props.associatedDevelopers" :key="developer.id">
                 {{ developer.name }} — <span class="text-sm text-gray-500">{{ developer.email }}</span>
                 </li>
             </template>

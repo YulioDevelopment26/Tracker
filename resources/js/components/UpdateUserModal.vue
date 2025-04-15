@@ -88,7 +88,7 @@ const disableInput = () => {
                             <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                             <select
                                 v-model="form.status"
-                                :class="['border h-9 border-gray-300 rounded bg-white px-2']"
+                                class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black"
                             >
                                 <option value="status" disabled>Status</option>
                                 <option value="active">Active</option>
@@ -99,7 +99,7 @@ const disableInput = () => {
                             <label class="block text-sm font-medium text-gray-700 mb-1">Work time</label>
                             <select
                                 v-model="form.work_time"
-                                :class="['border h-9 border-gray-300 rounded bg-white px-2']"
+                                class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black"
                                 :disabled="disableInput()"
                             >
                                 <option value="status" disabled>Status</option>

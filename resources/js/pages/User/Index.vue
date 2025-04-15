@@ -21,8 +21,6 @@ interface Users {
 const props = defineProps<{
   users: Users
 }>()
-
-console.log(props.users)
 </script>
 
 <template>

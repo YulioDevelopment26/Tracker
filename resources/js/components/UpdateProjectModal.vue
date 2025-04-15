@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { useForm, router } from '@inertiajs/vue3';
 import type { Project } from '@/types'
 
-
 interface Developer {
   id: number;
   name: string;
@@ -17,6 +16,7 @@ const props = defineProps<{
   project: Project;
   developers: Developer[];
 }>();
+
 const open = ref(false);
 
 const form = useForm({
@@ -24,17 +24,17 @@ const form = useForm({
   description: '',
   developers_ids: [] as number[],
   status: '',
-  developers_id: [] as number[],
 });
 
-watch (open, (isOpen) => {
-    if (isOpen) {
-        form.name = props.project.name;
-        form.description = props.project.description;
-        form.status = props.project.status;
-        form.developers_id = props.developers.map((dev) => dev.id);
-    }
-})
+watch(open, (isOpen) => {
+  if (isOpen) {
+    form.name = props.project.name;
+    form.description = props.project.description;
+    form.status = props.project.status;
+
+    form.developers_ids = props.project.users.map((dev: Developer) => dev.id);
+  }
+});
 
 const submit = () => {
   form.put(`/projects/${props.project.id}`, {
@@ -45,9 +45,19 @@ const submit = () => {
     },
   });
 };
+
+const toggleDeveloper = (id: number) => {
+  const index = form.developers_ids.indexOf(id);
+  if (index === -1) {
+    form.developers_ids.push(id);
+  } else {
+    form.developers_ids.splice(index, 1);
+  }
+};
 </script>
+
 <template>
-    <div>
+  <div>
     <Button @click="open = true" class="border-black bg-black text-white hover:bg-gray-400 hover:border-white hover:text-black">
       Update Project
     </Button>
@@ -67,41 +77,44 @@ const submit = () => {
           <div>
             <label class="block text-sm font-medium text-gray-700">Description</label>
             <Input v-model="form.description" class="w-full border-gray-300 text-black bg-white" />
-
           </div>
 
           <!-- Status -->
-            <div>
+          <div>
             <label class="block text-sm font-medium text-gray-700">Status</label>
-            <select
-                v-model="form.status"
-                class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black"
-            >
-                <option disabled :value="form.status">{{  props.project.status }}</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-                <option value="paused">Paused</option>
+            <select v-model="form.status" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black">
+              <option disabled :value="form.status">{{ props.project.status }}</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="paused">Paused</option>
             </select>
-            </div>
-
+          </div>
 
           <!-- Select developers -->
           <div>
             <label class="block text-sm font-medium text-gray-700">Developers</label>
-            <select
-                v-model="form.developers_id"
-                multiple
-                class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2"
-                >
-                <option v-for="dev in props.developers" :key="dev.id" :value="dev.id">
-                  {{ dev.name }} ( {{ dev.email }} )
-                </option>
-              </select>
+            <div class="border border-gray-300 rounded-md p-2 max-h-64 overflow-y-auto space-y-2">
+              <div 
+                v-for="developer in props.developers" 
+                :key="developer.id"
+                class="flex items-center space-x-2"
+              >
+                <input
+                  type="checkbox"
+                  :value="developer.id"
+                  :checked="form.developers_ids.includes(developer.id)"
+                  @change="toggleDeveloper(developer.id)"
+                  class="text-blue-600 border-gray-300 rounded"
+                />
+                <span class="text-sm text-gray-800">{{ developer.name }} ({{ developer.email }})</span>
+              </div>
+              <div v-if="!props.developers?.length" class="text-gray-500 text-sm">No developers available</div>
+            </div>
           </div>
 
-          <!-- Botones -->
+          <!-- Buttons -->
           <div class="flex justify-end gap-2">
             <Button type="button" variant="secondary" @click="open = false" class="bg-gray-200 text-gray-800 hover:bg-gray-300">
               Cancel
@@ -114,4 +127,4 @@ const submit = () => {
       </DialogContent>
     </Dialog>
   </div>
-  </template>
+</template>
