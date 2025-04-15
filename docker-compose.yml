@@ -4,9 +4,9 @@ services:
     container_name: postgres
     restart: unless-stopped
     environment:
-    #   POSTGRES_USER: admin
-    #   POSTGRES_PASSWORD: 12345
-    #   POSTGRES_DB: tracker_data_base
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: tracker_data_base
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -17,8 +17,8 @@ services:
     container_name: pgadmin
     restart: unless-stopped
     environment:
-      # PGADMIN_DEFAULT_EMAIL: admin@tracker.com
-      # PGADMIN_DEFAULT_PASSWORD: admin123*
+      PGADMIN_DEFAULT_EMAIL: admin@tracker.com
+      PGADMIN_DEFAULT_PASSWORD: admin123*
     ports:
       - "5050:80"
     depends_on:
