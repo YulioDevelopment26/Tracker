@@ -6,6 +6,7 @@ import DialogContent from './ui/dialog/DialogContent.vue';
 import DialogTitle from './ui/dialog/DialogTitle.vue';
 import Input from './ui/input/Input.vue';
 import { router, useForm } from '@inertiajs/vue3';
+import Swal from 'sweetalert2';
 
 
 const form = useForm({
@@ -19,15 +20,48 @@ const form = useForm({
 
 const open = ref(false)
 
-const submit = () => {
-    form.post('/users', {
-        onSuccess: () => {
+const submit = async () => {
+    try {
+        const response = await fetch('/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify(form),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: data.message || 'User created successfully',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+
             form.reset();
             open.value = false;
             router.reload();
+        } else {
+            throw new Error(data.message || 'Error creating user');
         }
-    })
-}
+    } catch (error) {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: error.message || 'An unexpected error occurred',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    }
+};
 </script>
 <template>
     <div>
@@ -64,9 +98,9 @@ const submit = () => {
                         <label class="block text-sm font-medium text-gray-700 mb-1">Work time</label>
                         <select
                             v-model="form.work_time"
-                            :class="['border h-9 border-gray-300 rounded bg-white px-2']"
+                            class=" border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black border"
                         >
-                            <option value="status" disabled>Status</option>
+                            <option disabled selected hidden>Status</option>
                             <option value="part time">Part time</option>
                             <option value="full">Full</option>
                         </select>

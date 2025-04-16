@@ -6,6 +6,7 @@ import DialogContent from './ui/dialog/DialogContent.vue';
 import DialogTitle from './ui/dialog/DialogTitle.vue';
 import { router, useForm } from '@inertiajs/vue3';
 import Input from './ui/input/Input.vue';
+import Swal from 'sweetalert2';
 
 interface User {
     id: number,
@@ -34,24 +35,52 @@ const form = useForm({
     status: props.user.status
 })
 
-const submit = () => {
-    try {
-        form.put(`/users/${props.user.id}`), {
-            onSuccess: () => {
-                form.reset();
-                open.value = true
-                router.reload();
-            }
-        }
-    } catch {
-        console.log(Error)
-    }
-}
-
 const disableInput = () => {
     return props.user.status === 'active' ? false : true;
 }
 
+const submit = async () => {
+    try {
+        const response = await fetch(`/users/${props.user.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify(form),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: data.message || 'User updated successfully',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+
+            form.reset();
+            open.value = false;
+            router.reload();
+        } else {
+            throw new Error(data.message || 'Error updating user');
+        }
+    } catch (error) {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: error.message || 'An unexpected error occurred',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    }
+};
 </script>
 <template>
     <div>

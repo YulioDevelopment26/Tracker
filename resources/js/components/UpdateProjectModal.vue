@@ -82,7 +82,7 @@ const toggleDeveloper = (id: number) => {
           <!-- Status -->
           <div>
             <label class="block text-sm font-medium text-gray-700">Status</label>
-            <select v-model="form.status" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black">
+            <select v-model="form.status" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black border capitalize">
               <option disabled :value="form.status">{{ props.project.status }}</option>
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>

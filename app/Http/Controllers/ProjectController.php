@@ -110,7 +110,9 @@ class ProjectController extends Controller
             $project->users()->sync($validatedData['developers_ids']);
         }
 
-        return redirect()->route('projects.show', $project->id);
+        return redirect()
+            ->route('projects.show', $project->id)
+            ->with('message', 'Project updated successfully');
     }
 
     public function destroy($id): JsonResponse

@@ -38,6 +38,7 @@ class TaskController extends Controller
             'sprint_id' => $validatedData['sprint_id'],
             'estimated_hours' => $validatedData['estimated_hours'],
         ]);
+
         return redirect()->route('sprints.show', [
             'project' => $request['project_id'],
             'sprint' => $validatedData['sprint_id'],

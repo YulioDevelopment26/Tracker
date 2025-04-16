@@ -87,8 +87,8 @@ const diffDays = (diffDate / (1000 * 60 * 60 * 24)) * 24;
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                             <select v-model="form.category" class="border h-9 border-gray-300 rounded text-black bg-white px-2">
-                                <option value="frontend">Front-end</option>
-                                <option value="backend">Back-end</option>
+                                <option value="frontend">Frontend</option>
+                                <option value="backend">Backend</option>
                                 <option value="full stack">Full Stack</option>
                                 <option value="design">Design</option>
                                 <option value="deployment">Deployment</option>

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->enum('status', ['to do', 'in progress', 'done'])->default('to do');
             $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
-            $table->enum('category', ['frontend, backend', 'full stack', 'design', 'deployment', 'fixes'])
+            $table->enum('category', ['frontend', 'backend', 'full stack', 'design', 'deployment', 'fixes'])
                 ->default('full stack');
             $table->integer('story_points');
 
