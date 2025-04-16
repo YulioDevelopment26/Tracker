@@ -21,7 +21,7 @@ class ProjectController extends Controller
 
         $developers = User::whereHas('roles', function ($query) {
             $query->where('name', 'developer');
-        })->get();
+        })->with('roles')->get();
 
         $projects = [];
         if ($role[0]->name === 'admin'){
@@ -44,16 +44,22 @@ class ProjectController extends Controller
 
     public function show($id): Response
     {
-        $authUser = User::find(Auth::id());
-        $role = $authUser->roles;
-        $permissions = $role[0]->name;
+        $authUser = Auth::user();
+        $role = $authUser->roles->first();
+        $permissions = $role ? $role->name : '';
 
         $project = Project::with('sprints')->findOrFail($id);
-        $developers = $project->users;
+
+        $developers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'developer');
+        })->with('roles')->get();
+
+        $associatedDevelopers = $project->users;
 
         return Inertia::render('Project/Show', [
             'project' => $project,
             'developers' => $developers,
+            'associatedDevelopers' => $associatedDevelopers,
             'permissions' => $permissions,
             'sprints' => $project->sprints,
         ]);
@@ -68,15 +74,14 @@ class ProjectController extends Controller
             'developers_ids.*' => 'exists:users,id',
         ]);
 
-
         $project = Project::create([
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
             'create_by' => auth()->id(),
         ]);
 
-        if (isset($validatedData['developer_ids'])) {
-            $project->users()->attch($validatedData['developer_ids']);
+        if (isset($validatedData['developers_ids'])) {
+            $project->users()->attach($validatedData['developers_ids']);
         }
 
         return redirect()->route('projects.show', $project->id)
@@ -88,8 +93,8 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
-            'developer_ids' => 'nullable|array',
-            'developer_ids.*' => 'exists:users,id',
+            'developers_ids' => 'nullable|array',
+            'developers_ids.*' => 'exists:users,id',
             'status' => 'required|string|max:255',
         ]);
 
@@ -101,11 +106,13 @@ class ProjectController extends Controller
             'status' => $validatedData['status'],
         ]);
 
-        if (isset($validatedData['developer_ids'])) {
-            $project->users()->sync($validatedData['developer_ids']);
+        if (isset($validatedData['developers_ids'])) {
+            $project->users()->sync($validatedData['developers_ids']);
         }
 
-        return redirect()->route('projects.show', $project->id);
+        return redirect()
+            ->route('projects.show', $project->id)
+            ->with('message', 'Project updated successfully');
     }
 
     public function destroy($id): JsonResponse

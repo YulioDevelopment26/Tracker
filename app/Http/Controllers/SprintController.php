@@ -24,7 +24,7 @@ class SprintController extends Controller
             'sprint' => $sprint,
             'tasks' => $tasks,
             'permissions' => $role[0]->name,
-            'project_id' => $project_id,
+            'project_id' => (int) $project_id,
         ]);
     }
 

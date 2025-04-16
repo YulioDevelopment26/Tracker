@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, withDefaults, defineProps } from 'vue';
+import { ref, defineProps } from 'vue';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,6 @@ interface Developer {
     email: string;
 }
 
-// Define props con valores por defecto para evitar errores de undefined
 const props = defineProps<{
     developers?: Developer[];
 }>();
@@ -24,6 +23,15 @@ const form = useForm({
   developers_ids: [] as number[],
 });
 
+const toggleDeveloper = (id: number) => {
+  const index = form.developers_ids.indexOf(id);
+  if (index === -1) {
+    form.developers_ids.push(id);
+  } else {
+    form.developers_ids.splice(index, 1);
+  }
+};
+
 const submit = () => {
   form.post('/projects', {
     onSuccess: () => {
@@ -33,7 +41,6 @@ const submit = () => {
     },
   });
 };
-
 </script>
 
 <template>
@@ -44,7 +51,6 @@ const submit = () => {
 
     <Dialog :open="open" @update:open="open = $event">
       <DialogContent class="max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <!-- Title -->
         <DialogTitle class="text-lg font-bold mb-4 text-gray-800">New Project</DialogTitle>
 
         <form @submit.prevent="submit" class="space-y-4">
@@ -54,33 +60,35 @@ const submit = () => {
             <Input v-model="form.name" class="w-full border-gray-300 text-black bg-white" />
           </div>
 
-          <!-- Descripción -->
+          <!-- Description -->
           <div>
             <label class="block text-sm font-medium text-gray-700">Description</label>
             <Input v-model="form.description" class="w-full border-gray-300 text-black bg-white" />
           </div>
 
-          <!-- Seleccionar desarrolladores -->
+          <!-- Developers Checkboxes -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Developers</label>
-            <select
-                v-model="form.developers_ids"
-                multiple
-                class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2"
-                >
-                <option v-for="developer in props.developers"
-                  :key="developer.id"
+            <label class="block text-sm font-medium text-gray-700 mb-1">Developers</label>
+            <div class="border border-gray-300 rounded-md p-2 max-h-64 overflow-y-auto space-y-2">
+              <div 
+                v-for="developer in props.developers" 
+                :key="developer.id"
+                class="flex items-center space-x-2"
+              >
+                <input
+                  type="checkbox"
                   :value="developer.id"
-                  v-if="props.developers?.length"
-                  class="text-black"
-                >
-                {{ developer.name }} ( {{ developer.email }} )
-                </option>
-                <option v-else disabled>No developers available</option>
-                </select>
+                  :checked="form.developers_ids.includes(developer.id)"
+                  @change="toggleDeveloper(developer.id)"
+                  class="text-blue-600 border-gray-300 rounded"
+                />
+                <span class="text-sm text-gray-800">{{ developer.name }} ({{ developer.email }})</span>
+              </div>
+              <div v-if="!props.developers?.length" class="text-gray-500 text-sm">No developers available</div>
+            </div>
           </div>
 
-          <!-- Botones -->
+          <!-- Buttons -->
           <div class="flex justify-end gap-2">
             <Button type="button" variant="secondary" @click="open = false" class="bg-gray-200 text-gray-800 hover:bg-gray-300">
               Cancel

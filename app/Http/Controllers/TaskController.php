@@ -38,13 +38,14 @@ class TaskController extends Controller
             'sprint_id' => $validatedData['sprint_id'],
             'estimated_hours' => $validatedData['estimated_hours'],
         ]);
+
         return redirect()->route('sprints.show', [
             'project' => $request['project_id'],
             'sprint' => $validatedData['sprint_id'],
         ])->with('success', 'Project created successfully');
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, $id): RedirectResponse
     {
         $validatedData = $request->validate([
             'estimated_start' => 'nullable|date',
@@ -57,12 +58,12 @@ class TaskController extends Controller
 
         $task = Task::findOrFail($id);
 
-        if ($validatedData['status'] === 'in progress'){
+        if ($validatedData['status'] === 'to do'){
             $task->status = 'in progress';
             $task->actual_start = Carbon::now()->format('d-m-Y');
         }
 
-        if ($validatedData['status'] === 'done'){
+        if ($validatedData['status'] === 'in progress'){
             $task->status = 'done';
             $task->actual_finish = Carbon::now()->format('d-m-Y');
         }
@@ -70,7 +71,7 @@ class TaskController extends Controller
         $task->update([
             'estimated_start' => $validatedData['estimated_start'],
             'estimated_finish' => $validatedData['estimated_finish'],
-            'status' => $validatedData['status'],
+            'status' => $task->status,
             'actual_start' => $task->actual_start,
             'actual_end' => $task->actual_end,
             'actual_hours' => $validatedData['actual_hours'],
@@ -78,6 +79,7 @@ class TaskController extends Controller
             'user_id' => $validatedData['user_id'],
         ]);
 
-        return response()->json(['message' => 'Task updated'], 201);
+        return redirect()->back()->with('message', 'Task updated successfully!');
+
     }
 }

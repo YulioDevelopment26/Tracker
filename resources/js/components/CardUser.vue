@@ -29,15 +29,14 @@ function getStatusClass(status: UserStatus): string {
             return  'bg-gray-100 text-gray-600'
     }
 }
-console.log(props.user)
 </script>
 <template>
     <div class="maxx-w-xs mx-auto mt-6">
         <div class="bg-white rounded-2xl shadow-md p-6 border-gray-200">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-xl font-bold text-gray-800">
-                    {{ props.user.name.length > 15
-                    ? props.user.name.slice(0, 15) + '...'
+                    {{ props.user.name.length > 12
+                    ? props.user.name.slice(0, 10) + '...'
                     : props.user.name }}
                 </h2>
                 <span
@@ -49,7 +48,9 @@ console.log(props.user)
             </div>
             <p class="text-gray-600 m-1">
                 <span class="font-bold text-black">Email:</span>
-                {{ props.user.email }}
+                {{ props.user.email.length > 15
+                ? props.user.email.slice(0, 15) + '...'
+                : props.user.email }}
             </p>
             <p class="text-gray-600 m-1">
                 <span class="font-bold text-black">Hour value: </span>

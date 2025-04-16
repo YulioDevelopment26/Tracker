@@ -8,16 +8,16 @@ import DialogTitle from './ui/dialog/DialogTitle.vue';
 import Input from './ui/input/Input.vue';
 
 interface Sprint {
-    id: number,
-    goal: string,
-    name: string,
-    start_date: string,
-    end_date: string,
+  id: number;
+  name: string;
+  goal: string;
+  start_date: string;
+  end_date: string;
 }
 
 const props = defineProps<{
-    sprint: Sprint
-    project_id: number
+    sprint: Sprint;
+    project_id: number;
 }>()
 
 const open = ref(false);
@@ -27,14 +27,13 @@ const form = useForm({
     description: '',
     priority: '',
     category: '',
-    story_points: 0,
+    story_points: 1,
     sprint_id: props.sprint.id,
     project_id: props.project_id,
     estimated_hours: 1,
 });
 
 const submit = () => {
-    console.log(form)
     form.post('/tasks', {
         onSuccess: () => {
             form.reset();
@@ -88,8 +87,8 @@ const diffDays = (diffDate / (1000 * 60 * 60 * 24)) * 24;
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                             <select v-model="form.category" class="border h-9 border-gray-300 rounded text-black bg-white px-2">
-                                <option value="frontend">Front-end</option>
-                                <option value="backend">Back-end</option>
+                                <option value="frontend">Frontend</option>
+                                <option value="backend">Backend</option>
                                 <option value="full stack">Full Stack</option>
                                 <option value="design">Design</option>
                                 <option value="deployment">Deployment</option>

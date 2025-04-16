@@ -12,11 +12,19 @@ interface Task {
     priority: string
 }
 
+interface Sprint {
+  id: number;
+  name: string;
+  goal: string;
+  start_date: string;
+  end_date: string;
+}
+
 const props = defineProps <{
     task: Task,
     permissions: string,
     project_id: number,
-    sprint: any[]
+    sprint: Sprint,
 }>()
 
 const formatDate = (date: string) => {
