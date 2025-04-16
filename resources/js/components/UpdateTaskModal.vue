@@ -7,12 +7,13 @@ import DialogTitle from './ui/dialog/DialogTitle.vue';
 import Input from './ui/input/Input.vue';
 import { router, useForm } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
+import Swal from 'sweetalert2';
 
 const props = defineProps<{
   style: string,
   task_id: number,
   project_id: number,
-  sprint: any[]
+  sprint: any,
 }>()
 
 const open = ref(false);
@@ -83,21 +84,61 @@ const cleanFormData = () => {
   });
 };
 
-const submit = () => {
-    cleanFormData()
-    try{
-        form.put(`/tasks/${props.task_id}`), {
-            onSuccess: () => {
-                form.reset();
-                open.value = true;
-                router.reload();
-            }
-        }
-    } catch{
-        console.log(Error)
-    }
-    
-}
+const submit = async () => {
+  cleanFormData();
+
+  try {
+    await form.put(`/tasks/${props.task_id}`, {
+      preserveScroll: true,
+      onSuccess: () => {
+        form.reset();         // Limpia los datos
+        open.value = false;   // Cierra el modal
+        router.reload();      // Recarga los datos de la página
+
+        // Toast de éxito
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'success',
+          title: 'Task updated successfully',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+          }
+        });
+      },
+      onError: () => {
+        // Toast de error si falla la validación u otro problema del backend
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          icon: 'error',
+          title: 'Failed to update task',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      }
+    });
+  } catch (error) {
+    console.error('Unexpected error:', error);
+
+    // Toast por errores fuera de Inertia (por ejemplo, conexión caída)
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'error',
+      title: 'Unexpected error occurred',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+  }
+};
+
 </script>
 
 <template>
@@ -163,10 +204,11 @@ const submit = () => {
               <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
               <select
                 v-model="form.status"
+                :disabled="isLocked('priority')"
                 :class="['border h-9 border-gray-300 rounded bg-white px-2', lockedClass('status')]"
               >
                 <option value="to do" disabled>To do</option>
-                <option value="in progress" :disabled="props.user.status === 'in progress'">In progress</option>
+                <option value="in progress">In progress</option>
                 <option value="done">Done</option>
               </select>
             </div>
