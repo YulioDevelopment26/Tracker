@@ -6,6 +6,8 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use \Illuminate\Support\Facades\Mail;
+use App\Mail\testResend;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -14,6 +16,12 @@ Route::get('/', function () {
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('dashboard', [TaskController::class, 'index'])->name('dashboard');
+Route::get('/test-email', function () {
+    Mail::to('yuliodevelopment@gmail.com')->send(new testResend());
+    return 'Correo enviado';
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -34,7 +42,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::post('users', [UserController::class, 'store'])->name('users.store');
     Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
-});
+})->middleware(['auth', 'verified']);
+
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
