@@ -2,14 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class TaskController extends Controller
 {
+    public function index(): Response
+    {
+        $authUser = User::find(Auth::id());
+        $role = $authUser->roles;
+
+        $projects = null;
+        if ($role[0]->name == 'admin') {
+            $projects = Project::with('sprints.tasks.user')->get();
+        } else if ($role[0]->name == 'developer') {
+            $tasks = Project::with('sprints.tasks')->where('user_id', Auth::id())->get();
+        }
+
+        return Inertia::render('Dashboard', [
+            'project' => $projects,
+        ]);
+    }
 
     public function show($id): JsonResponse
     {
