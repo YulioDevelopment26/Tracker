@@ -7,7 +7,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use \Illuminate\Support\Facades\Mail;
-use App\Mail\testResend;
+use App\Mail\sendMailUser;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -19,7 +19,7 @@ Route::get('dashboard', function () {
 
 Route::get('dashboard', [TaskController::class, 'index'])->name('dashboard');
 Route::get('/test-email', function () {
-    Mail::to('yuliodevelopment@gmail.com')->send(new testResend());
+    Mail::to('yuliodevelopment@gmail.com')->send(new sendMailUser());
     return 'Correo enviado';
 });
 

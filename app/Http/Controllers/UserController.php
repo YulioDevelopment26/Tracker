@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\sendMailUser;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -39,6 +41,10 @@ class UserController extends Controller
         ]);
 
         $user->roles()->attach(2);
+
+        if ($user->id !== null){
+            Mail::send(new sendMailUser($user));
+        }
 
         return response()->json(['message' => 'User created'], 201);
     }
