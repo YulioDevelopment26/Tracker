@@ -69,7 +69,7 @@ class ProjectController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
             'developers_ids' => 'nullable|array',
             'developers_ids.*' => 'exists:users,id',
         ]);
@@ -92,7 +92,7 @@ class ProjectController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
             'developers_ids' => 'nullable|array',
             'developers_ids.*' => 'exists:users,id',
             'status' => 'required|string|max:255',
