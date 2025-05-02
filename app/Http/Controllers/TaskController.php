@@ -2,14 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class TaskController extends Controller
 {
+    public function index(): Response
+    {
+        $authUser = User::find(Auth::id());
+        $role = $authUser->roles;
+
+
+        $permissions = $role[0]->name == 'admin' ? 'admin' : 'developer';
+
+        $projects = null;
+        if ($role[0]->name == 'admin') {
+            $projects = Project::with('sprints.tasks.user')->get();
+        } else if ($role[0]->name == 'developer') {
+            $projects = Auth::user()->projects()->with([
+                'sprints.tasks' => function ($query) {
+                    $query->where('user_id', Auth::id());
+                },
+                'sprints.tasks.user'
+            ])->get();
+        }
+
+        return Inertia::render('Dashboard', [
+            'projects' => $projects,
+            'permissions' => $permissions,
+        ]);
+    }
 
     public function show($id): JsonResponse
     {
@@ -20,7 +50,7 @@ class TaskController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
             'priority' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'story_points' => 'required|integer|max:255',
@@ -58,12 +88,12 @@ class TaskController extends Controller
 
         $task = Task::findOrFail($id);
 
-        if ($validatedData['status'] === 'to do'){
+        if ($validatedData['estimated_start'] && $validatedData['estimated_finish'] && $validatedData['status'] === 'to do'){
             $task->status = 'in progress';
             $task->actual_start = Carbon::now()->format('d-m-Y');
         }
 
-        if ($validatedData['status'] === 'in progress'){
+        if ($validatedData['estimated_start'] && $validatedData['estimated_finish'] && $validatedData['status'] === 'in progress'){
             $task->status = 'done';
             $task->actual_finish = Carbon::now()->format('d-m-Y');
         }
@@ -78,8 +108,32 @@ class TaskController extends Controller
             'story_points' => $validatedData['story_points'],
             'user_id' => $validatedData['user_id'],
         ]);
-
         return redirect()->back()->with('message', 'Task updated successfully!');
+    }
 
+    public function destroy($id): JsonResponse
+    {
+        $task = Task::findOrFail($id);
+        $task->delete();
+
+        return response()->json(['message' => 'Task deleted successfully!']);
+    }
+
+    public function cancel(int $id): JsonResponse
+    {
+        $task = Task::findOrFail($id);
+
+        $task->update([
+            'estimated_start' => null,
+            'estimated_finish' => null,
+            'status' => 'to do',
+            'actual_start' => null,
+            'actual_finish' => null,
+            'actual_hours' => null,
+            'story_points' => 0,
+            'user_id' => null,
+        ]);
+
+        return response()->json(['message' => 'Task cancelled successfully!']);
     }
 }

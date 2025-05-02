@@ -165,7 +165,7 @@ const deleteSprint = async () => {
             </div>
            </template>
            <div class="w-full flex justify-end mt-4" v-if="props.permissions === 'admin'">
-            <CreateTaskModal
+            <CreateTaskModal v-if="new Date(props.sprint.end_date) > new Date()"
                 :sprint="props.sprint"
                 :project_id="props.project_id" />
            </div>

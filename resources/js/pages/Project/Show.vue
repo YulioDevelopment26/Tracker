@@ -170,7 +170,7 @@ const deleteProject = async () => {
   
       <!-- Delete button -->
       <hr>
-      <div class="w-full flex justify-start pb-6 px-5 pt-4">
+      <div class="w-full flex justify-start pb-6 px-5 pt-4" v-if="props.permissions === 'admin' && !props.sprints.length">
         <button
           class="bg-red-100 text-red-600 px-4 py-2 rounded hover:bg-red-200 font-semibold"
           :value="props.project.id"

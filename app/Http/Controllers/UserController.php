@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -93,5 +94,13 @@ class UserController extends Controller
         $user = User::where('id', $id)->firstOrFail();
         $user->delete();
 
+    }
+
+    public function role(): JsonResponse
+    {
+        $authUser = User::find(Auth::id());
+        $role = $authUser->roles;
+
+        return response()->json(['role' => $role[0]->name]);
     }
 }

@@ -32,7 +32,7 @@ class SprintController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'goal' => 'required|string|max:255',
+            'goal' => 'required|string|max:500',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'project_id' => 'required|integer',
@@ -54,7 +54,7 @@ class SprintController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'goal' => 'required|string|max:255',
+            'goal' => 'required|string|max:500',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
         ]);

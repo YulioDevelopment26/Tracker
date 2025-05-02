@@ -13,7 +13,6 @@ class Project extends Model
     protected $table = 'projects';
     use SoftDeletes;
 
-
     protected $fillable = [
         'name',
         'description',
