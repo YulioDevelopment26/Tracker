@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue';
 import UpdateTaskModal from './UpdateTaskModal.vue';
+import Button from './ui/button/Button.vue';
+import { usePage } from '@inertiajs/vue3';
+import Swal from 'sweetalert2';
 
 interface Task {
     id: number,
@@ -10,6 +13,7 @@ interface Task {
     estimated_finish: string,
     status: string,
     priority: string
+    user_id: number | null,
 }
 
 interface Sprint {
@@ -19,6 +23,9 @@ interface Sprint {
   start_date: string;
   end_date: string;
 }
+
+const page = usePage();
+const auth_id = page.props.auth.user.id;
 
 const props = defineProps <{
     task: Task,
@@ -102,6 +109,91 @@ const taskStatusStyles = computed(() => {
       };
   }
 });
+
+const showDelete = computed(() =>
+  props.task.status === 'to do' && props.permissions === 'admin'
+);
+
+const showCancel = computed(() =>
+  props.task.status === 'in progress' &&
+  props.permissions === 'developer' &&
+  props.task.user_id === auth_id
+);
+
+const showSideButton = computed(() => showDelete.value || showCancel.value);
+
+
+const cancelTask = () => {
+  fetch(`/tasks/cancel/${props.task.id}`, {
+    method: 'POST',
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(async response => {
+      const data = await response.json();
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Task Cancelled',
+          text: data.message,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: data.message || 'There was a problem cancelling the task.',
+        });
+      }
+    })
+    .catch(error => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Unexpected Error',
+        text: 'An unexpected error occurred while cancelling the task.',
+      });
+      console.error('Error cancelling task:', error);
+    });
+};
+
+const deleteTask = () => {
+  fetch(`/tasks/${props.task.id}`, {
+    method: 'DELETE',
+    headers: {
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(async response => {
+      const data = await response.json();
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Task Deleted',
+          text: data.message,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: data.message || 'There was a problem deleting the task.',
+        });
+      }
+    })
+    .catch(error => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Unexpected Error',
+        text: 'An unexpected error occurred while deleting the task.',
+      });
+      console.error('Error deleting task:', error);
+    });
+};
 </script>
 <template>
     <div :class="`w-full max-w-xs flex flex-col justify-between p-5 rounded-xl border-l-4 ${taskStatusStyles.border} bg-gradient-to-br ${taskStatusStyles.bg} shadow transition hover:shadow-md`">
@@ -133,14 +225,31 @@ const taskStatusStyles = computed(() => {
             </svg>
             {{ formatDate(props.task.estimated_start) }} → {{ formatDate(props.task.estimated_finish) }}
             </div>
-            <div class="flex justify-end mt-2">
-                <UpdateTaskModal 
-                 :style="taskStatusStyles.button"
-                 :task_id="props.task.id"
-                 :permissions="props.permissions"
-                 :project_id="props.project_id"
-                 :sprint="props.sprint"
-                />
+            <div :class="['flex mt-2 items-center', showSideButton ? 'justify-between' : 'justify-end']">
+              <div v-if="showSideButton">
+                <Button
+                  v-if="showDelete"
+                  class="bg-red-100 text-red-700 hover:bg-red-200 mx-1"
+                  @click="deleteTask()"
+                >
+                  Delete
+                </Button>
+                <Button
+                  v-if="showCancel"
+                  class="bg-red-100 text-red-700 hover:bg-red-200 mx-1"
+                  @click="cancelTask()"
+                >
+                  Cancel
+                </Button>
+              </div>
+
+              <UpdateTaskModal
+                :style="taskStatusStyles.button"
+                :task_id="props.task.id"
+                :permissions="props.permissions"
+                :project_id="props.project_id"
+                :sprint="props.sprint"
+              />
             </div>
         </div>
     </div>

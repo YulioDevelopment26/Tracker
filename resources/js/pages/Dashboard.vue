@@ -29,6 +29,8 @@ interface Sprint {
   id: number;
   name: string;
   tasks: Task[];
+  start_date: string;
+  end_date: string;
 }
 
 interface Project {
@@ -40,7 +42,8 @@ interface Project {
 }
 
 const props = defineProps<{
-  project: Project[];
+  projects: Project[];
+  permissions: string;
 }>();
 
 const activeSprintId = ref<number | null>(null);
@@ -66,16 +69,18 @@ const getPaymentsBySprint = (sprint: Sprint) => {
 
   return result;
 };
+
+console.log(props.projects)
 </script>
 
 <template>
   <Head title="Dashboard" />
-  <AppLayout :breadcrumbs="breadcrumbs">
+  <AppLayout :breadcrumbs="breadcrumbs" v-if="props.permissions === 'admin'">
     <h1 class="text-2xl font-semibold text-center my-6">Weekly Information</h1>
 
     <div class="w-full px-6">
-      <template v-if="props.project && props.project.length">
-        <div v-for="project in props.project" :key="project.id" class="mb-6">
+      <template v-if="props.projects && props.projects.length">
+        <div v-for="project in props.projects" :key="project.id" class="mb-6">
           <details class="group bg-white border border-gray-200 rounded-lg shadow p-4">
             <summary class="cursor-pointer text-lg font-bold text-blue-600 group-open:text-blue-800">
               {{ project.name }} <span class="text-sm text-gray-500">– Project</span>
@@ -86,7 +91,7 @@ const getPaymentsBySprint = (sprint: Sprint) => {
               <div v-for="sprint in project.sprints" :key="sprint.id">
                 <details class="group bg-gray-50 border border-gray-200 rounded-md p-3">
                   <summary class="cursor-pointer text-base font-medium text-green-600 group-open:text-green-800 flex justify-between items-center">
-                    <span>{{ sprint.name }} <span class="text-sm text-gray-500">– Sprint</span></span>
+                    <span>{{ sprint.name }} <span class="text-sm text-gray-500">– Sprint / {{ sprint.start_date.split('T')[0] }} to {{ sprint.end_date.split('T')[0] }}</span></span>
                     <button
                       class="text-xs text-blue-600 hover:underline"
                       @click.stop="openModal(sprint.id)"
@@ -97,7 +102,7 @@ const getPaymentsBySprint = (sprint: Sprint) => {
 
                   <!-- Tasks -->
                   <div class="mt-4 ml-4 space-y-6">
-                    <!-- ✅ DONE TASKS -->
+                    <!--  DONE TASKS -->
                     <div v-if="sprint.tasks.some(task => task.status === 'done')">
                       <h4 class="text-sm font-semibold text-green-600 mb-2">Done</h4>
                       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -173,5 +178,75 @@ const getPaymentsBySprint = (sprint: Sprint) => {
         </div>
       </template>
     </div>
+  </AppLayout>
+  <AppLayout v-if="props.permissions === 'developer'">
+    <h1 class="text-2xl font-bold mb-6 text-center">My Tasks</h1>
+
+    <div class="w-full px-6 space-y-6">
+      <template v-if="props.projects.length">
+        <div
+          v-for="project in props.projects"
+          :key="project.id"
+          class="border border-gray-200 bg-white rounded-lg shadow p-4"
+        >
+          <details class="group">
+            <summary class="cursor-pointer text-lg font-bold text-blue-700 group-open:text-blue-900 flex justify-between items-center">
+              {{ project.name }}
+              <Link
+                :href="`/projects/${project.id}/tasks`"
+                class="text-sm text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded transition"
+              >
+                Go to Tasks
+              </Link>
+            </summary>
+
+            <div class="mt-4 space-y-4 ml-4">
+              <div
+                v-for="sprint in project.sprints"
+                :key="sprint.id"
+              >
+                <details
+                  v-if="sprint.tasks.length"
+                  class="group bg-gray-50 border border-gray-200 rounded-md p-3"
+                >
+                  <summary class="cursor-pointer text-base font-medium text-green-600 group-open:text-green-800">
+                    {{ sprint.name }} 
+                    <span class="text-sm text-gray-500">– {{ sprint.start_date.split('T')[0] }} to {{ sprint.end_date.split('T')[0] }}</span>
+                  </summary>
+
+                  <div class="mt-4 ml-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div
+                      v-for="task in sprint.tasks"
+                      :key="task.id"
+                      class="bg-white border border-gray-200 rounded-lg shadow p-4 hover:shadow-md transition"
+                    >
+                      <h3 class="text-sm font-semibold text-gray-800 mb-1">
+                        {{ task.name }}
+                      </h3>
+                      <p class="text-xs text-gray-500">
+                        <span class="font-bold text-gray-600">Status:</span> {{ task.status }}
+                      </p>
+                      <p class="text-xs text-gray-500">
+                        <span class="font-bold text-gray-600">Due date:</span> {{ task.updated_at.split('T')[0] }}
+                      </p>
+                      <p class="text-xs text-gray-500">
+                        <span class="font-bold text-gray-600">Estimated hours:</span> {{ task.estimated_hours ?? 'N/A' }}
+                      </p>
+                    </div>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </details>
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="text-center text-gray-500 italic">
+          No tasks assigned to you.
+        </div>
+      </template>
+    </div>
+
   </AppLayout>
 </template>

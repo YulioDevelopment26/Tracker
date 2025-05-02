@@ -27,7 +27,7 @@ const form = useForm({
     description: '',
     priority: '',
     category: '',
-    story_points: 1,
+    story_points: 0,
     sprint_id: props.sprint.id,
     project_id: props.project_id,
     estimated_hours: 1,
