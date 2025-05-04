@@ -39,45 +39,48 @@ const disableInput = () => {
     return props.user.status === 'active' ? false : true;
 }
 
-router.put(`/users/${props.user.id}`, form, {
-    preserveScroll: true,
+const submit = () => {
+    router.put(`/users/${props.user.id}`, form, {
+        preserveScroll: true,
 
-    // Se ejecuta si no hubo errores de validación y el backend respondió bien
-    onSuccess: () => {
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'User Updated',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-        });
+        // Se ejecuta si no hubo errores de validación y el backend respondió bien
+        onSuccess: (page) => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: page.props.flash?.message || 'User Updated',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
 
-        form.reset();
-        open.value = false;
-        router.reload(); // Recarga los datos si es necesario
-    },
+            form.reset();
+            open.value = false;
+            router.reload();
+        },
 
-    // Se ejecuta si el backend devuelve errores de validación (422)
-    onError: (errors) => {
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: 'Error',
-            text: Object.values(errors).join(', '),
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-        });
-    },
+        // Se ejecuta si el backend devuelve errores de validación (422)
+        onError: (errors) => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Error',
+                text: Object.values(errors).join(', '),
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
+        },
 
-    // Se ejecuta si la solicitud falla por algo inesperado (500, 404, etc.)
-    onFinish: () => {
-        console.log('La petición finalizó (éxito o error)');
-    },
-});
+        // Se ejecuta si la solicitud finaliza (éxito o error)
+        onFinish: () => {
+            console.log('La petición finalizó (éxito o error)');
+        },
+    });
+}; // <- Esta llave faltaba
+
 </script>
 <template>
     <div>
