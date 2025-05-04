@@ -47,8 +47,10 @@ const submit = async () => {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             },
+            credentials: 'include',
             body: JSON.stringify(form),
         });
+
 
         const data = await response.json();
 
