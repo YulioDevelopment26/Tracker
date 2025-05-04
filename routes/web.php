@@ -36,8 +36,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     Route::post('/tasks/cancel/{task}', [TaskController::class, 'cancel'])->name('tasks.cancel');
 
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
-    Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::get('/api/user/role', [UserController::class, 'role'])->name('users.role');
 })->middleware(['auth', 'verified']);

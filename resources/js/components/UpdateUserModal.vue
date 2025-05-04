@@ -39,27 +39,14 @@ const disableInput = () => {
     return props.user.status === 'active' ? false : true;
 }
 
-const submit = async () => {
-    try {
-        const response = await fetch(`/users/${props.user.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            credentials: 'include',
-            body: JSON.stringify(form),
-        });
-
-
-        const data = await response.json();
-
-        if (response.ok) {
+const submit = () => {
+    router.put(`/users/${props.user.id}`, form, {
+        onSuccess: () => {
             Swal.fire({
                 toast: true,
                 position: 'top-end',
                 icon: 'success',
-                title: data.message || 'User updated successfully',
+                title: 'Usuario actualizado correctamente',
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
@@ -68,20 +55,20 @@ const submit = async () => {
             form.reset();
             open.value = false;
             router.reload();
-        } else {
-            throw new Error(data.message || 'Error updating user');
+        },
+        onError: (errors) => {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Error al actualizar el usuario',
+                text: Object.values(errors).join(', '),
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+            });
         }
-    } catch (error) {
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
-            title: error.message || 'An unexpected error occurred',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-        });
-    }
+    });
 };
 </script>
 <template>
