@@ -69,6 +69,7 @@ const getPaymentsBySprint = (sprint: Sprint) => {
 
   return result;
 };
+console.log(props)
 </script>
 
 <template>

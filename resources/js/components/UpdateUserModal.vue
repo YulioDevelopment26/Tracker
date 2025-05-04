@@ -39,37 +39,45 @@ const disableInput = () => {
     return props.user.status === 'active' ? false : true;
 }
 
-const submit = () => {
-    router.put(`/users/${props.user.id}`, form, {
-        onSuccess: () => {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: 'Usuario actualizado correctamente',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
+router.put(`/users/${props.user.id}`, form, {
+    preserveScroll: true,
 
-            form.reset();
-            open.value = false;
-            router.reload();
-        },
-        onError: (errors) => {
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'error',
-                title: 'Error al actualizar el usuario',
-                text: Object.values(errors).join(', '),
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-            });
-        }
-    });
-};
+    // Se ejecuta si no hubo errores de validación y el backend respondió bien
+    onSuccess: () => {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'User Updated',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+
+        form.reset();
+        open.value = false;
+        router.reload(); // Recarga los datos si es necesario
+    },
+
+    // Se ejecuta si el backend devuelve errores de validación (422)
+    onError: (errors) => {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Error',
+            text: Object.values(errors).join(', '),
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+    },
+
+    // Se ejecuta si la solicitud falla por algo inesperado (500, 404, etc.)
+    onFinish: () => {
+        console.log('La petición finalizó (éxito o error)');
+    },
+});
 </script>
 <template>
     <div>

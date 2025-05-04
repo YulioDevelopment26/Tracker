@@ -20,7 +20,7 @@ class UserController extends Controller
         return Inertia::render('User/Index', ['users' => $users]);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -40,11 +40,10 @@ class UserController extends Controller
         ]);
 
         $user->roles()->attach(2);
-
-        return response()->json(['message' => 'User created'], 201);
+        return redirect()->back()->with('success', 'User created');
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -86,7 +85,7 @@ class UserController extends Controller
             $this->destroy($id);
         }
 
-        return response()->json(['message' => 'User updated'], 201);
+        return redirect()->back()->with('success', 'User updated');
     }
 
     public function destroy($id): void
