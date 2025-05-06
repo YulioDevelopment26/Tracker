@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 # Habilitar mod_rewrite
 RUN a2enmod rewrite
 
-# ✅ Cambiar DocumentRoot a /var/www/html/public
+# Cambiar DocumentRoot a /var/www/html/public
 RUN sed -i 's|/var/www/html|/var/www/html/public|g' /etc/apache2/sites-available/000-default.conf
 
 # Establecer la carpeta base del proyecto
@@ -26,4 +26,6 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Asignar permisos correctos
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+    && chmod -R 755 /var/www/html \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache

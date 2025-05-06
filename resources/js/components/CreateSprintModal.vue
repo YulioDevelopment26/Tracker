@@ -58,49 +58,49 @@ const submit = () => {
 <template>
   <div>
     <!-- button -->
-    <Button @click="open = true" class="border-blue-500 text-white bg-blue-500 hover:bg-blue-600">
+    <Button @click="open = true" >
       Create Sprint
     </Button>
 
     <!-- Modal -->
     <Dialog :open="open" @update:open="open = $event">
-      <DialogContent class="max-w-md p-6 bg-white rounded-lg shadow-lg">
+      <DialogContent class="max-w-md p-6 rounded-lg shadow-lg">
         <!-- title -->
-        <DialogTitle class="text-lg font-bold mb-4 text-gray-800">New Sprint</DialogTitle>
+        <DialogTitle class="text-lg font-bold mb-4 ">New Sprint</DialogTitle>
 
         <!-- form -->
         <form @submit.prevent="submit" class="space-y-4">
           <!-- Name -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Name</label>
-            <Input v-model="form.name" class="w-full border-gray-300 text-black bg-white" />
+            <label class="block text-sm font-medium">Name</label>
+            <Input v-model="form.name" class="w-full border-gray-300 " />
           </div>
 
           <!-- Goal -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Goal</label>
-            <Input v-model="form.goal" class="w-full border-gray-300 text-black bg-white" />
+            <label class="block text-sm font-medium">Goal</label>
+            <Input v-model="form.goal" class="w-full border-gray-300 " />
           </div>
 
           <!-- Start Date -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Start Date</label>
+            <label class="block text-sm font-medium">Start Date</label>
             <Input
               v-model="form.start_date"
               type="date"
               :min="todayFormatted"
-              class="w-full border-gray-300 text-black bg-white"
+              class="w-full border-gray-300 "
             />
           </div>
 
           <!-- End Date -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">End Date</label>
+            <label class="block text-sm font-medium">End Date</label>
             <Input
               v-model="form.end_date"
               type="date"
               :min="form.start_date"
-              class="w-full border-gray-300 text-black bg-white"
+              class="w-full border-gray-300 "
             />
           </div>
 
@@ -110,14 +110,12 @@ const submit = () => {
               type="button"
               variant="secondary"
               @click="open = false"
-              class="bg-gray-200 text-gray-800 hover:bg-gray-300"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               :disabled="form.processing"
-              class="bg-blue-500 text-white hover:bg-blue-600"
             >
               Save
             </Button>

@@ -80,7 +80,7 @@ console.log(props)
     <div class="w-full px-6">
       <template v-if="props.projects && props.projects.length">
         <div v-for="project in props.projects" :key="project.id" class="mb-6">
-          <details class="group bg-white border border-gray-200 rounded-lg shadow p-4">
+          <details class="group bg-background border border-foreground/20 rounded-lg shadow p-4">
             <summary class="cursor-pointer text-lg font-bold text-blue-600 group-open:text-blue-800">
               {{ project.name }} <span class="text-sm text-gray-500">– Project</span>
             </summary>
