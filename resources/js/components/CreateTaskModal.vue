@@ -113,7 +113,7 @@ const diffDays = (diffDate / (1000 * 60 * 60 * 24)) * 24;
                         <Button type="button" variant="secondary" @click="open = false" class="bg-gray-200 text-gray-800 hover:bg-gray-300">
                             Cancel
                         </Button>
-                        <Button type="submit" :disable="form.processing" class="bg-blue-500 text-white hover:bg-blue-600">
+                        <Button type="submit" :disable="form.processing" >
                             Save
                         </Button>
                     </div>

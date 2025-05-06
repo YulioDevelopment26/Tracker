@@ -32,9 +32,9 @@ function getStatusClass(status: UserStatus): string {
 </script>
 <template>
     <div class="maxx-w-xs mx-auto mt-6">
-        <div class="bg-white rounded-2xl shadow-md p-6 border-gray-200">
+        <div class="bg-background border border-foreground/200 rounded-2xl shadow-md p-6">
             <div class="flex justify-between items-center mb-2">
-                <h2 class="text-xl font-bold text-gray-800">
+                <h2 class="text-xl font-bold">
                     {{ props.user.name.length > 12
                     ? props.user.name.slice(0, 10) + '...'
                     : props.user.name }}
@@ -47,17 +47,17 @@ function getStatusClass(status: UserStatus): string {
                 </span>
             </div>
             <p class="text-gray-600 m-1">
-                <span class="font-bold text-black">Email:</span>
+                <span class="font-bold">Email:</span>
                 {{ props.user.email.length > 15
                 ? props.user.email.slice(0, 15) + '...'
                 : props.user.email }}
             </p>
             <p class="text-gray-600 m-1">
-                <span class="font-bold text-black">Hour value: </span>
+                <span class="font-bold">Hour value: </span>
                 {{ props.user.hour_value }}
             </p>
             <p class="text-gray-600 m-1 capitalize">
-               <span class="font-bold text-black">Work time:</span>
+               <span class="font-bold">Work time:</span>
                {{ props.user.work_time }}
             </p>
             <div class="w-full flex justify-end">

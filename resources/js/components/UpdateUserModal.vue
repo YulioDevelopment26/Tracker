@@ -84,40 +84,40 @@ const submit = () => {
 </script>
 <template>
     <div>
-        <Button @click="open = true" class="bg-blue-500 mt-3 text-white hover:bg-blue-600">
+        <Button @click="open = true" class="mt-2">
             View more
         </Button>
 
         <Dialog :open="open" @update:open="open = $event">
-            <DialogContent class="max-w-md p-6 bg-white rounded-lg shadow-lg">
-                <DialogTitle class="text-lg font-bold mb-4 text-gray-800"> {{ props.user.name }}</DialogTitle>
+            <DialogContent class="max-w-md p-6  rounded-lg shadow-lg">
+                <DialogTitle class="text-lg font-bold mb-4 "> {{ props.user.name }}</DialogTitle>
                 <form @submit.prevent="submit" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Name</label>
-                        <Input v-model="form.name" class="w-full border-gray-300 text-black bg-white" :disabled="disableInput()" />
+                        <label class="block text-sm font-medium">Name</label>
+                        <Input v-model="form.name" class="w-full border-gray-300 " :disabled="disableInput()" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Nick name</label>
-                        <Input v-model="form.nickname" class="w-full border-gray-300 text-black bg-white capitalize" :disabled="disableInput()" />
+                        <label class="block text-sm font-medium">Nick name</label>
+                        <Input v-model="form.nickname" class="w-full border-gray-300  capitalize" :disabled="disableInput()" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Email</label>
-                        <Input v-model="form.email" class="w-full border-gray-300 text-black bg-white" :disabled="disableInput()" />
+                        <label class="block text-sm font-medium">Email</label>
+                        <Input v-model="form.email" class="w-full border-gray-300 " :disabled="disableInput()" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Password</label>
-                        <Input v-model="form.password" placeholder="If you forget your password, enter a new one." class="w-full border-gray-300 text-black bg-white" :disabled="disableInput()" />
+                        <label class="block text-sm font-medium">Password</label>
+                        <Input v-model="form.password" placeholder="If you forget your password, enter a new one." class="w-full border-gray-300 " :disabled="disableInput()" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Hour value</label>
-                        <Input v-model="form.hour_value" class="w-full border-gray-300 text-black bg-white" :disabled="disableInput()" />
+                        <label class="block text-sm font-medium">Hour value</label>
+                        <Input v-model="form.hour_value" class="w-full border-gray-300 " :disabled="disableInput()" />
                     </div>
                     <div class="flex space-x-4 justify-start">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <label class="block text-sm font-medium mb-1">Status</label>
                             <select
                                 v-model="form.status"
-                                class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black"
+                                class="w-full bg-background border border-foreground/200 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 "
                             >
                                 <option value="status" disabled>Status</option>
                                 <option value="active">Active</option>
@@ -125,10 +125,10 @@ const submit = () => {
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Work time</label>
+                            <label class="block text-sm font-medium mb-1">Work time</label>
                             <select
                                 v-model="form.work_time"
-                                class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black"
+                                class="w-full bg-background border border-foreground/200  rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 "
                                 :disabled="disableInput()"
                             >
                                 <option value="status" disabled>Status</option>
@@ -140,10 +140,10 @@ const submit = () => {
 
                     <!-- Buttons -->
                     <div class="flex justify-end gap-2">
-                        <Button type="button" variant="secondary" @click="open = false" class="bg-gray-200 text-gray-800 hover:bg-gray-300">
+                        <Button type="button" variant="secondary" @click="open = false" >
                             Close
                         </Button>
-                        <Button type="submit" :disabled="form.processing" class="bg-blue-500 text-white hover:bg-blue-600">
+                        <Button type="submit" :disabled="form.processing" >
                             Update
                         </Button>
                     </div>

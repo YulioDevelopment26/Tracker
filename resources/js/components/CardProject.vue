@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
+import { Button } from '@/components/ui/button';
 
 type ProjectStatus = 'active' | 'inactive' | 'completed' | 'cancelled' | 'paused'
 
@@ -49,9 +50,9 @@ const showProject = () => {
 
 <template>
   <div class="max-w-xs mx-auto mt-6">
-    <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-200">
+    <div class="bg-background rounded-2xl shadow-md p-6 border border-foreground/20">
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-xl font-bold text-gray-800">
+        <h2 class="text-xl font-bold ">
           {{ props.project.name.length > 12
           ? props.project.name.slice(0, 12) + '...'
           : props.project.name }}
@@ -75,7 +76,7 @@ const showProject = () => {
         <p><span class="font-medium">Created:</span> {{ formatDate(props.project.created_at) }}</p>
       </div>
       <div class="w-full flex justify-end mt-2">
-        <button class="bg-blue-100 text-blue-600 px-2 py-1 rounded hover:bg-blue-200" type="submit" :value="props.project.id" @click="showProject">Show</button>
+        <Button :value="props.project.id" @click="showProject">Show</Button>
       </div>
     </div>
   </div>

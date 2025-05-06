@@ -104,7 +104,7 @@ const deleteProject = async () => {
     <AppLayout :breadcrumbs="breadcrumbs">
       <!-- Project title -->
       <div class="w-full flex justify-center pt-6">
-        <h1 class="text-3xl font-bold text-gray-500">{{ props.project.name }}</h1>
+        <h1 class="text-3xl font-bold ">{{ props.project.name }}</h1>
       </div>
   
       <!-- Top bar: back and update buttons -->
@@ -125,15 +125,15 @@ const deleteProject = async () => {
       <!-- Project content -->
       <div class="m-4 space-y-6">
         <!-- Description -->
-        <div class="bg-gray-100 p-4 rounded shadow-sm">
-          <h2 class="text-lg font-semibold text-gray-700 mb-2">Description</h2>
+        <div class="bg-background p-4 rounded shadow-sm">
+          <h2 class="text-lg font-semibold mb-2">Description:</h2>
           <p class="text-gray-600">{{ props.project.description }}</p>
         </div>
   
         <!-- Developer list -->
-        <div class="bg-white p-4 rounded shadow-sm border">
-          <h2 class="text-lg font-semibold text-gray-700 mb-2">Developers in the project</h2>
-          <ul class="list-disc list-inside text-gray-700 space-y-1">
+        <div class="bg-background p-4 rounded shadow-sm border">
+          <h2 class="text-lg font-semibold mb-2">Developers in the project</h2>
+          <ul class="list-disc list-inside space-y-1">
             <template v-if="props.developers.length">
                 <li v-for="developer in props.associatedDevelopers" :key="developer.id">
                 {{ developer.name }} — <span class="text-sm text-gray-500">{{ developer.email }}</span>
@@ -159,7 +159,7 @@ const deleteProject = async () => {
           </div>
         </template>
         <template v-else >
-          <div class="bg-red-50 p-4 rounded shadow-sm border border-red-200 flex items-center justify-between">
+          <div class="bg-red-500/10 p-4 rounded shadow-sm border border-red-500 flex items-center justify-between">
             <span class="text-sm text-red-500">No sprints have been created yet</span>
           </div>
         </template>

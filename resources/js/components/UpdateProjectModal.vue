@@ -58,31 +58,31 @@ const toggleDeveloper = (id: number) => {
 
 <template>
   <div>
-    <Button @click="open = true" class="border-black bg-black text-white hover:bg-gray-400 hover:border-white hover:text-black">
+    <Button @click="open = true">
       Update Project
     </Button>
 
     <Dialog :open="open" @update:open="open = $event">
-      <DialogContent class="max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <DialogTitle class="text-lg font-bold mb-4 text-gray-800">Update Project</DialogTitle>
+      <DialogContent class="max-w-md p-6 bg-background rounded-lg shadow-lg">
+        <DialogTitle class="text-lg font-bold mb-4 ">Update Project</DialogTitle>
 
         <form @submit.prevent="submit" class="space-y-4">
           <!-- Name -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Name</label>
-            <Input v-model="form.name" class="w-full border-gray-300 text-black bg-white" />
+            <label class="block text-sm font-medium">Name</label>
+            <Input v-model="form.name" class="w-full border-gray-300 bg-background" />
           </div>
 
           <!-- Description -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Description</label>
-            <Input v-model="form.description" class="w-full border-gray-300 text-black bg-white" />
+            <label class="block text-sm font-medium">Description</label>
+            <Input v-model="form.description" class="w-full border-gray-300 bg-background" />
           </div>
 
           <!-- Status -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Status</label>
-            <select v-model="form.status" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-white text-black border capitalize">
+            <label class="block text-sm font-medium">Status</label>
+            <select v-model="form.status" class="w-full border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2 bg-background border capitalize">
               <option disabled :value="form.status">{{ props.project.status }}</option>
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
@@ -94,7 +94,7 @@ const toggleDeveloper = (id: number) => {
 
           <!-- Select developers -->
           <div>
-            <label class="block text-sm font-medium text-gray-700">Developers</label>
+            <label class="block text-sm font-medium">Developers</label>
             <div class="border border-gray-300 rounded-md p-2 max-h-64 overflow-y-auto space-y-2">
               <div 
                 v-for="developer in props.developers" 
